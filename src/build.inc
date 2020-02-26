@@ -1,0 +1,14 @@
+; RomWBW Configured for RCZ80 std 2020-02-26
+;
+#DEFINE	TIMESTAMP	"2020-02-26"
+;
+ROMSIZE		.EQU	512
+;
+#INCLUDE "RCZ80_std.asm"
+;
+
+CPUOSC    .SET  7372800   ; CPU OSC FREQ IN MHZ
+BID_ROM0        .EQU    $00
+BID_RAM0        .EQU    $80
+RAMSIZE         .EQU    512             ; SIZE OF RAM IN KB (MUST MATCH YOUR HARDWARE!!!)
+
