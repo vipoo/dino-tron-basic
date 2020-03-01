@@ -10,7 +10,7 @@ ASSEMBLER=../../uz80as/src/uz80as
 
 bin/%.com: src/%.asm
 	function removeLst {
-		rm src/$(basename $(notdir $@)).lst
+		rm src/$(basename $(notdir $@)).lst || true
 	}
 	trap removeLst EXIT
 	mkdir -p ./bin
