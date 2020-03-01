@@ -1,20 +1,22 @@
 export SHELL:=/bin/bash
 export SHELLOPTS:=$(if $(SHELLOPTS),$(SHELLOPTS):)pipefail:errexit
+.ONESHELL:
 
 all: bin/dtbasic.com
 
-#ASSEMBLER=../../RomWBW/Tools/Linux/uz80as
-ASSEMBLER=../../uz80as/src/uz80as
+ASSEMBLER=uz80as
 
 .ONESHELL:
 
-bin/%.com: src/%.asm
-	function removeLst {
+includes = $(wildcard src/*.inc)
+
+bin/dtbasic.com: src/dtbasic.asm ${includes}
+	@function removeLst {
 		rm src/$(basename $(notdir $@)).lst || true
 	}
 	trap removeLst EXIT
 	mkdir -p ./bin
-	(cd src && $(ASSEMBLER) -q $(notdir $^) ../$@ )
+	(cd src && $(ASSEMBLER) -q ./dtbasic.asm ../$@ )
 
 clean:
 	rm -rf ./bin
