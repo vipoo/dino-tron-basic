@@ -38,6 +38,16 @@
 #DEFCONT \                      LD      C, 09H
 #DEFCONT \                      CALL    0005H
 
+#DEFINE cpmConsoleInput()       LD      C, 01H
+#DEFCONT \                      CALL    0005H
+
+#DEFINE cpmConsoleOutput(chr)   LD      E, chr
+#DEFCONT \                      LD      C, 02H
+#DEFCONT \                      CALL    0005H
+
+#DEFINE cpmGetConsoleStatus()   LD      C, 0BH
+#DEFCONT \                      CALL    0005H
+
 
 ;#include "cfg_rcz80.asm"
 #INCLUDE "std.asm"
@@ -261,7 +271,7 @@ BRKRET: CALL    CLREG           ; Clear registers and stack
 
 BFREE:  .BYTE   " Bytes free",CR,LF,0,0
 
-SIGNON: .BYTE   "Dinotron BASIC Ver 0.0.2",CR,LF
+SIGNON: .BYTE   "Dinotron BASIC Ver 0.0.7",CR,LF
         .BYTE   "Copyright ",40,"C",41
         .BYTE   " 1978 by Microsoft",CR,LF,"$",0,0
 
@@ -1335,26 +1345,17 @@ TSTBRK:
 	PUSH	DE
 	PUSH	HL
 
-	LD	C,CIODEV_CONSOLE; CONSOLE UNIT TO C
-	LD	B,BF_CIOIST	; HBIOS FUNC: INPUT STATUS
-	RST	08		; HBIOS RETURNS STATUS IN A
+        cpmGetConsoleStatus()
+        OR      A
+        JR      NZ, skip
 
-	POP	HL		; RESTORE REGISTERS (AF IS OUTPUT)
-	POP	DE
-	POP	BC
-        RET     Z               ; No key, go back
-	PUSH	BC
-	PUSH	DE
-	PUSH	HL
+        POP     HL              ; RESTORE REGISTERS (AF IS OUTPUT)
+        POP     DE
+        POP     BC
+        RET
 
-; 	INPUT CHARACTER FROM CONSOLE VIA HBIOS
-
-	LD	C,CIODEV_CONSOLE; CONSOLE UNIT TO C
-	LD	B,BF_CIOIN	; HBIOS FUNC: INPUT CHAR
-	RST	08		; HBIOS READS CHARACTDR
-	LD	A,E		; MOVE CHARACTER TO A FOR RETURN
-;
-
+skip:
+        cpmConsoleInput()
 	POP	HL		; RESTORE REGISTERS (AF IS OUTPUT)
 	POP	DE
 	POP	BC
