@@ -11,12 +11,12 @@ ASSEMBLER=uz80as
 includes = $(wildcard src/*.inc)
 
 bin/dtbasic.com: src/dtbasic.asm ${includes}
-	@function removeLst {
+	function removeLst {
 		rm src/$(basename $(notdir $@)).lst || true
 	}
-	trap removeLst EXIT
+	#trap removeLst EXIT
 	mkdir -p ./bin
-	(cd src && $(ASSEMBLER) -q ./dtbasic.asm ../$@ )
+	(cd src && $(ASSEMBLER) ./dtbasic.asm ../$@ )
 
 clean:
 	rm -rf ./bin

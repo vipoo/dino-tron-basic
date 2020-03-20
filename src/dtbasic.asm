@@ -23,6 +23,7 @@
 
 #include "cpm.inc"
 #include "std.asm"
+#include "tracing.inc"
 
 ABBRERR .EQU    FALSE           ; Choose between long error message and abbreviated error messages.
 VT100   .EQU    TRUE            ; Use VT100 escape codes for CLS
@@ -1094,7 +1095,10 @@ CLOTST: CALL    GETINP          ; Get input character
 	XOR     A               ; Null character
 	RET
 
-LIST:   CALL    ATOH            ; ASCII number to DE
+LIST: 	trace(MARKER1)
+
+
+	CALL    ATOH            ; ASCII number to DE
 	RET     NZ              ; Return if anything extra
 	POP     BC              ; Rubbish - Not needed
 	CALL    SRCHLN          ; Search for line number in DE
@@ -4716,6 +4720,7 @@ DUROVF: LD      (IY+2),E
 
 
 #include "io.inc"
+#include "trace_strings.inc"
 
 ;
 ;       ONE OCTAVE TONE TABLE IN FREQUENCY, DURATION FORMAT. TO COMPENSATE FOR DIFFERENT
